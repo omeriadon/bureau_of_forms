@@ -36,6 +36,22 @@ export default function ModalHost({
 		};
 	}, [stack.length]);
 
+	const closeCountRef = React.useRef(0);
+	const [closeScale, setCloseScale] = React.useState(1);
+
+	function handleClose(e: React.MouseEvent) {
+		if (e.altKey) {
+			closeCountRef.current = 0;
+			setCloseScale(1);
+		} else {
+			closeCountRef.current += 1;
+			setCloseScale(
+				Math.max(0.12, Math.pow(0.85, closeCountRef.current)),
+			);
+		}
+		close();
+	}
+
 	if (!stack.length) return null;
 	return (
 		<>
@@ -51,8 +67,13 @@ export default function ModalHost({
 					{stack[stack.length - 1]}
 					<div className="flex gap-2 justify-end mt-4">
 						<button
-							onClick={close}
+							onClick={(e) => handleClose(e)}
 							className="px-3 py-2 border rounded"
+							style={{
+								transform: `scale(${closeScale})`,
+								transformOrigin: "right center",
+								transition: "transform 180ms linear",
+							}}
 						>
 							Close
 						</button>

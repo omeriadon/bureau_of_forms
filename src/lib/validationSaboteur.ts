@@ -20,7 +20,7 @@ export function phantomErrors(
 		if (!values["terms"] || Math.random() < 0.6)
 			errors.push({
 				field: "terms",
-				message: "You must check the unrelated checkbox in Section C",
+				message: "You must agree to the terms.",
 			});
 		if (values["address"] && Math.random() < 0.5)
 			errors.push({

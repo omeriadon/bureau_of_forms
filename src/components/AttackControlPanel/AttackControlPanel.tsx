@@ -39,10 +39,6 @@ export default function AttackControlPanel({
 					</label>
 				))}
 			</div>
-			<p className="mt-2 text-sm text-gray-600">
-				Tip: press <kbd>Shift+Escape</kbd> to escape traps (opt-out
-				documented).
-			</p>
 		</div>
 	);
 }

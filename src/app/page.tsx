@@ -20,6 +20,7 @@ export default function Home() {
 		history: true,
 		modals: true,
 		audio: true,
+		perf: true,
 	} as const;
 	const { stack, open, close } = useModalFactory();
 	const audioRef = useRef<number | null>(null);
@@ -33,14 +34,29 @@ export default function Home() {
 	}, []);
 
 	useEffect(() => {
+		let perfStop: (() => void) | null = null;
 		import("../lib/audioManager").then((m) => m.startAtrociousAudio());
+		import("../lib/perfSaboteur")
+			.then((m) => {
+				if (attacks.perf)
+					perfStop = m.startPerfSaboteur({ intensity: 1 });
+			})
+			.catch(() => {});
 		return () => {
 			import("../lib/audioManager")
 				.then((m) => m.stopAtrociousAudio())
 				.catch(() => {});
+			import("../lib/perfSaboteur")
+				.then((m) => m.stopPerfSaboteur())
+				.catch(() => {});
+			if (perfStop) {
+				try {
+					perfStop();
+				} catch (_) {}
+				perfStop = null;
+			}
 		};
-	}, []);
-
+	}, [attacks.perf]);
 
 	function onStart() {
 		const MultiStepForm =

@@ -27,7 +27,6 @@ export function startAtrociousAudio(src = "/interesting.webm") {
 				}
 				if (!gainNode && audioCtx) {
 					gainNode = audioCtx.createGain();
-					// amplify beyond nominal 0-1 volume (may clip) — intentionally harsh
 					gainNode.gain.value = 3.0;
 				}
 				if (sourceNode && gainNode) {

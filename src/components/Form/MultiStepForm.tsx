@@ -42,17 +42,6 @@ export default function MultiStepForm({ attacks, close, open }: Props) {
 
 	useEffect(() => {
 		function handler(e: KeyboardEvent) {
-			if (e.key === "Escape" && e.shiftKey) {
-				try {
-					clearChaosTheme();
-					stopAtrociousAudio();
-					if (typeof window !== "undefined") {
-						localStorage.setItem("boff_sane", "1");
-					}
-					setSubmittedMessage("Shift+Escape: sane mode engaged");
-				} catch (err) {}
-				return;
-			}
 			if (e.key !== "Tab") return;
 			const root = containerRef.current;
 			if (!root) return;
@@ -260,7 +249,7 @@ export default function MultiStepForm({ attacks, close, open }: Props) {
 											setField("terms", e.target.checked)
 										}
 									/>{" "}
-									I agree to unrelated terms (toggling may
+									I agree to  terms (toggling may
 									clear some errors)
 								</label>
 							</div>
