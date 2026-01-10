@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bureau of Forms — intentionally hostile, coherent bureaucratic UI
+
+This repository contains a small Next.js app that intentionally frustrates and delights by emulating a "broken" government service. All behaviors are reversible and opt-outtable; see the **Safety & opt-out** section below.
 
 ## Getting Started
 
@@ -10,15 +12,37 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Safety & opt-out
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Add `?sane=1` to the URL to disable corrupting behaviors and audio (recommended for reviewers).
+- Press `Shift+Escape` to reset the UI and opt out of active attacks.
+- All corruption is local to your browser (`localStorage`) and reversible; there is no data exfiltration or malicious device activity.
+
+What is a "seed"?
+
+- The site uses pseudo-randomness to generate themes, border radii, and some timed corruptions. If you provide a `?seed=12345` query param the same sequence of random choices will be used so you can reproduce a single, particularly awful run for demonstration and testing. If you don't provide a seed, a fresh random seed is created for each session.
+
+## What this project implements
+
+- Fleeing primary CTA that avoids the pointer until a key sequence is typed. ✅
+- Theme randomizer with clashing palettes and jitter. ✅
+- Probabilistic localStorage corruption (reversible via settings). ✅
+- Modal cascades and phantom validations (UI-only). ✅
+- Ambiguous server submit endpoint (`/api/submit`) that responds with plausible but unclear messages. ✅
+
+## Development notes
+
+- This app uses the Next.js app router and TypeScript. Add a `?seed=...` query parameter to reproduce a seeded run.
+
+---
+
+(Original Next.js README content follows below)
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Learn More
 
