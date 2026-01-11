@@ -48,6 +48,14 @@ export default function Home() {
 					perfStop = m.startPerfSaboteur({ intensity: 0.75 });
 			})
 			.catch(() => {});
+		import("../lib/historySaboteur").then((m) => {
+			try {
+				if (attacks.history)
+					(window as any).__boff_history = m.startHistorySaboteur({
+						interval: 1800,
+					});
+			} catch (e) {}
+		});
 		return () => {
 			import("../lib/audioManager")
 				.then((m) => m.stopAtrociousAudio())
@@ -61,6 +69,10 @@ export default function Home() {
 				} catch (_) {}
 				perfStop = null;
 			}
+			try {
+				if ((window as any).__boff_history)
+					(window as any).__boff_history();
+			} catch (e) {}
 		};
 	}, [attacks.perf]);
 
@@ -73,6 +85,7 @@ export default function Home() {
 		let typoStop: (() => void) | null = null;
 		let textStop: (() => void) | null = null;
 		let fontFlashStop: (() => void) | null = null;
+		let formPopStop: (() => void) | null = null;
 		function onScroll() {
 			try {
 				if (Math.random() < 0.25) {
@@ -114,7 +127,11 @@ export default function Home() {
 			});
 			import("../lib/fontFlash").then((m) => {
 				try {
-					if (attacks.ui) fontFlashStop = m.startFontFlash({ interval: 10000, duration: 900 });
+					if (attacks.ui)
+						fontFlashStop = m.startFontFlash({
+							interval: 10000,
+							duration: 900,
+						});
 				} catch (e) {}
 			});
 			import("../lib/textSaboteur").then((m) => {
@@ -123,6 +140,14 @@ export default function Home() {
 						textStop = m.startTextSaboteur({
 							freq: 1500,
 							chance: 0.38,
+						});
+				} catch (e) {}
+			});
+			import("../lib/formPopupSaboteur").then((m) => {
+				try {
+					if (attacks.modals)
+						(window as any).__boff_formPop = m.startFormPopper({
+							interval: 7000,
 						});
 				} catch (e) {}
 			});
@@ -185,6 +210,7 @@ export default function Home() {
 				4 * 60 * 1000,
 			);
 			(window as any).__boff_open = open;
+			(window as any).__boff_start = onStart;
 
 			window.addEventListener("scroll", onScroll);
 		}
@@ -209,6 +235,10 @@ export default function Home() {
 					(window as any).__boff_errors();
 			} catch (e) {}
 			try {
+				if ((window as any).__boff_formPop)
+					(window as any).__boff_formPop();
+			} catch (e) {}
+			try {
 				if (fontFlashStop) fontFlashStop();
 			} catch (e) {}
 			document.body.classList.remove("gradient-storm-enabled");
@@ -222,6 +252,7 @@ export default function Home() {
 					detachInput();
 				} catch (e) {}
 			(window as any).__boff_open = undefined;
+			(window as any).__boff_start = undefined;
 		};
 	}, [attacks.navigation, attacks.inputs, attacks.ui]);
 

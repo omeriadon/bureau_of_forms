@@ -25,7 +25,8 @@ export default function FleeingCTA({ onClick }: { onClick?: () => void }) {
 
 	useEffect(() => {
 		if (!ref.current || unlocked) return;
-		const detach = attachFlee(ref.current, { distance: 200, step: 180 });
+		// make the flee gentler so CTA remains catchable
+		const detach = attachFlee(ref.current, { distance: 120, step: 120 });
 		return () => detach();
 	}, [unlocked]);
 

@@ -38,6 +38,3 @@ export function startFontFlash({
 	};
 }
 
-export function stopFontFlash() {
-	// noop
-}

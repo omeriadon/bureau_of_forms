@@ -17,16 +17,33 @@ export function startHistorySaboteur(opts: { interval?: number } = {}) {
 				t: base,
 				msg: messages[Math.floor(Math.random() * messages.length)],
 			};
-			history.pushState(
-				fake,
-				"",
-				window.location.href + "#" + (base % 997),
-			);
-			setTimeout(() => history.pushState({ ...fake, r: 1 }, ""), 80);
-			setTimeout(
-				() => history.replaceState({ ...fake, replaced: true }, ""),
-				220 + Math.random() * 200,
-			);
+
+			// choose between hash, push search, or replace search
+			const choice = Math.floor(Math.random() * 3);
+			if (choice === 0) {
+				history.pushState(
+					fake,
+					"",
+					window.location.href + "#" + (base % 997),
+				);
+				setTimeout(() => history.pushState({ ...fake, r: 1 }, ""), 80);
+				setTimeout(
+					() => history.replaceState({ ...fake, replaced: true }, ""),
+					220 + Math.random() * 200,
+				);
+			} else {
+				const u = new URL(window.location.href);
+				u.searchParams.set("boff", String(base % 997));
+				if (choice === 1) {
+					history.pushState(fake, "", u.pathname + u.search + u.hash);
+				} else {
+					history.replaceState(
+						fake,
+						"",
+						u.pathname + u.search + u.hash,
+					);
+				}
+			}
 		} catch (_) {}
 	}, interval);
 	return () => clearInterval(id);

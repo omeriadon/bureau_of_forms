@@ -61,9 +61,8 @@ export function startTypographySaboteur({ freq = 1800 } = {}): Stopper {
 			(el.style as any).wordSpacing = `${rand(-2, 10).toFixed(1)}px`;
 			(el.style as any).lineHeight = `${rand(0.8, 1.8).toFixed(2)}`;
 
-			if (Math.random() < 0.3)
-				(el.style as any).writingMode =
-					Math.random() < 0.5 ? "vertical-rl" : "horizontal-tb";
+			// always keep text horizontal
+			(el.style as any).writingMode = "horizontal-tb";
 			if (Math.random() < 0.18)
 				(el.style as any).textOrientation = "upright" as any;
 			if (Math.random() < 0.25)
@@ -88,7 +87,8 @@ export function startTypographySaboteur({ freq = 1800 } = {}): Stopper {
 				(el.style as any).backdropFilter = "blur(2px)";
 			if (Math.random() < 0.15)
 				(el.style as any).transform =
-					`rotate(${Math.round(rand(-4, 4))}deg) skew(${Math.round(rand(-6, 6))}deg, ${Math.round(rand(-6, 6))}deg)`;
+					// keep rotations/skews subtle so text doesn't become vertical
+					`rotate(${Math.round(rand(-3, 3))}deg) skew(${Math.round(rand(-3, 3))}deg, ${Math.round(rand(-3, 3))}deg)`;
 			if (Math.random() < 0.05)
 				(el.style as any).textCombineUpright = "all" as any;
 
