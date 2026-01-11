@@ -346,10 +346,6 @@ export default function Home() {
 				<section className="sidebar">
 					<h3 className="font-bold">About</h3>
 					<p>Seed: {seed === null ? "—" : seed}</p>
-					<p className="text-xs">
-						Seed controls randomness — use <code>?seed=1234</code>{" "}
-						to reproduce a run.
-					</p>
 				</section>
 			</main>
 			{attacks.ui && <div className="gradient-storm" aria-hidden />}
