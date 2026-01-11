@@ -80,7 +80,6 @@ function randomRGBA() {
 }
 
 function generateRandomPalette() {
-
 	const bg = Math.random() < 0.5 ? randomHex() : randomRGBA();
 	const fg = Math.random() < 0.5 ? randomHex() : randomRGBA();
 	const accent = Math.random() < 0.5 ? randomHex() : randomRGBA();

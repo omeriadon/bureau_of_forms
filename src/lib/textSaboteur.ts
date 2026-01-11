@@ -81,7 +81,6 @@ export function startTextSaboteur({
 								3 + Math.floor(Math.random() * 8),
 							);
 					} else {
-
 						const txt = el.textContent || "";
 						if (txt.length > 5 && Math.random() < 0.3) {
 							const pos = Math.floor(
