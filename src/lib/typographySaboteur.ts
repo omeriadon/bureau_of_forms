@@ -42,13 +42,20 @@ export function startTypographySaboteur({ freq = 1800 } = {}): Stopper {
 			);
 			(el as HTMLElement).classList.add(`font-salad-${fontIdx}`);
 
-			if (Math.random() < 0.2) {
-				(el.style as any).fontSize = `${Math.round(rand(9, 42))}px`;
-			} else if (Math.random() < 0.4) {
-				(el.style as any).fontSize = `${rand(0.6, 2.6).toFixed(2)}rem`;
+			// font sizes biased upward for readability
+			if (Math.random() < 0.25) {
+				(el.style as any).fontSize = `${Math.round(rand(14, 48))}px`;
+			} else if (Math.random() < 0.45) {
+				(el.style as any).fontSize = `${rand(0.9, 3.2).toFixed(2)}rem`;
 			} else {
-				(el.style as any).fontSize = `${Math.round(rand(70, 150))}%`;
+				(el.style as any).fontSize = `${Math.round(rand(90, 180))}%`;
 			}
+			// clamp extremely small values
+			try {
+				const computed = window.getComputedStyle(el).fontSize;
+				const px = parseFloat(computed || "0");
+				if (px && px < 14) (el.style as any).fontSize = "14px";
+			} catch (e) {}
 
 			(el.style as any).letterSpacing = `${rand(-0.6, 3).toFixed(2)}px`;
 			(el.style as any).wordSpacing = `${rand(-2, 10).toFixed(1)}px`;

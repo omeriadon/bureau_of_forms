@@ -72,6 +72,7 @@ export default function Home() {
 		let purgeId: number | null = null;
 		let typoStop: (() => void) | null = null;
 		let textStop: (() => void) | null = null;
+		let fontFlashStop: (() => void) | null = null;
 		function onScroll() {
 			try {
 				if (Math.random() < 0.25) {
@@ -89,15 +90,40 @@ export default function Home() {
 					detachInput = m.attachInputSabotage(document);
 				m.attachAutocompleteLiar(document);
 			});
+			import("../lib/toastManager").then((m) => {
+				try {
+					if (attacks.ui)
+						(window as any).__boff_toasts = m.startToastStorm({
+							freq: 1600,
+						});
+				} catch (e) {}
+			});
+			import("../lib/errorPopup").then((m) => {
+				try {
+					if (attacks.modals)
+						(window as any).__boff_errors = m.startErrorPopups({
+							interval: 30000,
+						});
+				} catch (e) {}
+			});
 			import("../lib/typographySaboteur").then((m) => {
 				try {
 					if (attacks.ui || attacks.theme)
 						typoStop = m.startTypographySaboteur({ freq: 1200 });
 				} catch (e) {}
 			});
+			import("../lib/fontFlash").then((m) => {
+				try {
+					if (attacks.ui) fontFlashStop = m.startFontFlash({ interval: 10000, duration: 900 });
+				} catch (e) {}
+			});
 			import("../lib/textSaboteur").then((m) => {
 				try {
-					if (attacks.ui || attacks.inputs) textStop = m.startTextSaboteur({ freq: 1500, chance: 0.38 });
+					if (attacks.ui || attacks.inputs)
+						textStop = m.startTextSaboteur({
+							freq: 1500,
+							chance: 0.38,
+						});
 				} catch (e) {}
 			});
 			fontId = window.setInterval(
@@ -174,6 +200,17 @@ export default function Home() {
 				try {
 					textStop();
 				} catch (e) {}
+			try {
+				if ((window as any).__boff_toasts)
+					(window as any).__boff_toasts();
+			} catch (e) {}
+			try {
+				if ((window as any).__boff_errors)
+					(window as any).__boff_errors();
+			} catch (e) {}
+			try {
+				if (fontFlashStop) fontFlashStop();
+			} catch (e) {}
 			document.body.classList.remove("gradient-storm-enabled");
 			window.removeEventListener("scroll", onScroll);
 			if (detachClick)

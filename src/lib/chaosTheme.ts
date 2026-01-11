@@ -51,8 +51,6 @@ export function setPalette(p: { bg: string; fg: string; accent: string }) {
 		) as HTMLElement[];
 		els.forEach((el, i) => {
 			el.style.borderRadius = randomBorderRadius();
-
-			// apply contrasting garish tints
 			if (i % 3 === 0) el.style.color = p.fg;
 			else if (i % 3 === 1) el.style.color = p.accent;
 			else el.style.color = p.fg;
@@ -82,7 +80,7 @@ function randomRGBA() {
 }
 
 function generateRandomPalette() {
-	// generate high-contrast-ish combos (but truly random)
+
 	const bg = Math.random() < 0.5 ? randomHex() : randomRGBA();
 	const fg = Math.random() < 0.5 ? randomHex() : randomRGBA();
 	const accent = Math.random() < 0.5 ? randomHex() : randomRGBA();
@@ -99,7 +97,6 @@ export function startThemeSaboteur({ interval = 3500 } = {}): () => void {
 			try {
 				const p = generateRandomPalette();
 				setPalette(p);
-				// occasionally apply a slightly darker/lighter overlay
 				if (Math.random() < 0.25) {
 					const root = document.documentElement;
 					root.style.setProperty("--bg", p.bg);
