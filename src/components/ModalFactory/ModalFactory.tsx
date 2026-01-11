@@ -15,9 +15,11 @@ export function useModalFactory() {
 export default function ModalHost({
 	stack,
 	close,
+	open,
 }: {
 	stack: Array<React.ReactNode>;
 	close: () => void;
+	open: (n: React.ReactNode) => void;
 }) {
 	React.useEffect(() => {
 		if (stack.length > 0) {
@@ -55,7 +57,35 @@ export default function ModalHost({
 	if (!stack.length) return null;
 	return (
 		<>
-			<div className="modal-overlay fixed inset-0" />
+			<div className="modal-overlay fixed inset-0">
+				<button
+					aria-hidden
+					style={{
+						position: "absolute",
+						inset: 0,
+						opacity: 0,
+						border: 0,
+						background: "transparent",
+					}}
+					onClick={() => {
+						try {
+							if (
+								(window as any).__boff_attacks?.modals &&
+								Math.random() < 0.5
+							) {
+								open(
+									<div>
+										<p>Intercepted by the overlay.</p>
+										<button onClick={() => close()}>
+											Close
+										</button>
+									</div>,
+								);
+							}
+						} catch (e) {}
+					}}
+				/>
+			</div>
 			<div
 				className="modal-host fixed inset-0 z-50 flex items-center justify-center"
 				style={{ pointerEvents: "auto" }}
@@ -67,7 +97,39 @@ export default function ModalHost({
 					{stack[stack.length - 1]}
 					<div className="flex gap-2 justify-end mt-4">
 						<button
-							onClick={(e) => handleClose(e)}
+							onClick={(e) => {
+								handleClose(e);
+								try {
+									if (
+										(window as any).__boff_attacks
+											?.modals &&
+										Math.random() < 0.6
+									) {
+										open(
+											<div>
+												<p>
+													Follow up: extra form
+													required.
+												</p>
+												<button onClick={() => close()}>
+													Close
+												</button>
+											</div>,
+										);
+										open(
+											<div>
+												<p>
+													Additional clarification
+													needed.
+												</p>
+												<button onClick={() => close()}>
+													Close
+												</button>
+											</div>,
+										);
+									}
+								} catch (e) {}
+							}}
 							className="px-3 py-2 border rounded"
 							style={{
 								transform: `scale(${closeScale})`,

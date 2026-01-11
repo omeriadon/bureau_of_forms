@@ -7,6 +7,8 @@ import FleeingCTA from "../components/FleeingCTA/FleeingCTA";
 import ModalHost, {
 	useModalFactory,
 } from "../components/ModalFactory/ModalFactory";
+import VanishingNav from "../components/Nav/VanishingNav";
+import TeleportMenu from "../components/Nav/TeleportMenu";
 import {
 	applyRandomTheme,
 	clearChaosTheme,
@@ -21,6 +23,9 @@ export default function Home() {
 		modals: true,
 		audio: true,
 		perf: true,
+		inputs: true,
+		navigation: true,
+		ui: true,
 	} as const;
 	const { stack, open, close } = useModalFactory();
 	const audioRef = useRef<number | null>(null);
@@ -30,6 +35,7 @@ export default function Home() {
 
 		try {
 			localStorage.removeItem("boff_sane");
+			(window as any).__boff_attacks = attacks;
 		} catch (e) {}
 	}, []);
 
@@ -39,7 +45,7 @@ export default function Home() {
 		import("../lib/perfSaboteur")
 			.then((m) => {
 				if (attacks.perf)
-					perfStop = m.startPerfSaboteur({ intensity: 1 });
+					perfStop = m.startPerfSaboteur({ intensity: 0.75 });
 			})
 			.catch(() => {});
 		return () => {
@@ -57,6 +63,130 @@ export default function Home() {
 			}
 		};
 	}, [attacks.perf]);
+
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		let detachClick: (() => void) | null = null;
+		let detachInput: (() => void) | null = null;
+		let fontId: number | null = null;
+		let purgeId: number | null = null;
+		let typoStop: (() => void) | null = null;
+		let textStop: (() => void) | null = null;
+		function onScroll() {
+			try {
+				if (Math.random() < 0.25) {
+					window.scrollBy(0, (Math.random() - 0.5) * 60);
+				}
+			} catch (e) {}
+		}
+
+		if (attacks.navigation || attacks.inputs || attacks.ui) {
+			import("../lib/clickSaboteur").then((m) => {
+				detachClick = m.attachClickSabotage(document);
+			});
+			import("../lib/inputSaboteur").then((m) => {
+				if (attacks.inputs)
+					detachInput = m.attachInputSabotage(document);
+				m.attachAutocompleteLiar(document);
+			});
+			import("../lib/typographySaboteur").then((m) => {
+				try {
+					if (attacks.ui || attacks.theme)
+						typoStop = m.startTypographySaboteur({ freq: 1200 });
+				} catch (e) {}
+			});
+			import("../lib/textSaboteur").then((m) => {
+				try {
+					if (attacks.ui || attacks.inputs) textStop = m.startTextSaboteur({ freq: 1500, chance: 0.38 });
+				} catch (e) {}
+			});
+			fontId = window.setInterval(
+				() => {
+					try {
+						const ps = Array.from(
+							document.querySelectorAll(
+								"p, li, h1, h2, h3, h4, h5, h6, a, button, span, label, input, textarea, pre",
+							),
+						);
+						ps.forEach((p: Element, i) => {
+							if (Math.random() < 0.18) {
+								const cls = `font-salad-${1 + Math.floor(Math.random() * 7)}`;
+								(p as HTMLElement).classList.remove(
+									"font-salad-1",
+									"font-salad-2",
+									"font-salad-3",
+									"font-salad-4",
+									"font-salad-5",
+									"font-salad-6",
+									"font-salad-7",
+								);
+								(p as HTMLElement).classList.add(cls);
+							}
+						});
+						const buttons = Array.from(
+							document.querySelectorAll("button"),
+						);
+						buttons.forEach((b: Element) => {
+							try {
+								const be = b as HTMLButtonElement;
+								if (Math.random() < 0.06) {
+									if (/submit/i.test(be.textContent || ""))
+										be.textContent = "Cancel";
+									else if (
+										/cancel/i.test(be.textContent || "")
+									)
+										be.textContent = "Submit";
+									else if (
+										/delete/i.test(be.textContent || "")
+									)
+										be.textContent = "Keep";
+								}
+							} catch (e) {}
+						});
+					} catch (e) {}
+				},
+				3500 + Math.random() * 5000,
+			);
+
+			document.body.classList.add("gradient-storm-enabled");
+
+			const purgeId = window.setInterval(
+				() => {
+					try {
+						if (Math.random() < 0.9) sessionStorage.clear();
+					} catch (e) {}
+				},
+				4 * 60 * 1000,
+			);
+			(window as any).__boff_open = open;
+
+			window.addEventListener("scroll", onScroll);
+		}
+
+		return () => {
+			if (fontId) clearInterval(fontId);
+			if (purgeId) clearInterval(purgeId);
+			if (typoStop)
+				try {
+					typoStop();
+				} catch (e) {}
+			if (textStop)
+				try {
+					textStop();
+				} catch (e) {}
+			document.body.classList.remove("gradient-storm-enabled");
+			window.removeEventListener("scroll", onScroll);
+			if (detachClick)
+				try {
+					detachClick();
+				} catch (e) {}
+			if (detachInput)
+				try {
+					detachInput();
+				} catch (e) {}
+			(window as any).__boff_open = undefined;
+		};
+	}, [attacks.navigation, attacks.inputs, attacks.ui]);
 
 	function onStart() {
 		const MultiStepForm =
@@ -76,19 +206,60 @@ export default function Home() {
 	useEffect(() => {
 		setSeed(seedFromQuery());
 		applyRandomTheme(seedFromQuery());
+		let themeStop: (() => void) | null = null;
+		if ((window as any).__boff_attacks?.theme) {
+			import("../lib/chaosTheme").then((m) => {
+				try {
+					themeStop = m.startThemeSaboteur({ interval: 4000 });
+				} catch (e) {}
+			});
+		}
+		return () => {
+			if (themeStop)
+				try {
+					themeStop();
+				} catch (e) {}
+		};
 	}, []);
 
+	const [entered, setEntered] = React.useState(false);
 	return (
 		<div className="page-root min-h-screen p-8">
 			<header className="flex items-center gap-4 mb-6">
-				<h1 className="text-3xl font-extrabold chaos-jitter">
-					Bureau of Forms
-				</h1>
+				<VanishingNav />
+				<div style={{ flex: 1 }}>
+					<h1 className="text-3xl font-extrabold chaos-jitter">
+						Bureau of Forms
+					</h1>
+				</div>
+				<TeleportMenu />
 			</header>
 			<div className="garish-banner">
 				OFFICIAL NOTICE: Please have patience and check your entries
 				twice (or don't).
-			</div>
+			</div>{" "}
+			{!entered && (
+				<div
+					className="fake-404 p-6 border-4"
+					style={{ position: "relative" }}
+				>
+					<h2 className="content-title">404 — Page not found</h2>
+					<p className="content-copy">
+						We couldn't find what you're looking for. A small link
+						is hidden — try{" "}
+						<a
+							href="#enter"
+							onClick={(e) => {
+								e.preventDefault();
+								setEntered(true);
+							}}
+						>
+							enter
+						</a>
+						.
+					</p>
+				</div>
+			)}{" "}
 			<main className="main-grid">
 				<section className="content-section">
 					<h2 className="content-title chaos-flicker">
@@ -113,7 +284,8 @@ export default function Home() {
 					</p>
 				</section>
 			</main>
-			<ModalHost stack={stack} close={close} />
+			{attacks.ui && <div className="gradient-storm" aria-hidden />}
+			<ModalHost stack={stack} close={close} open={open} />
 		</div>
 	);
 }

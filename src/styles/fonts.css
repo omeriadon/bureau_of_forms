@@ -1,0 +1,72 @@
+@font-face {
+	font-family: "Boff-36Days";
+	src: url("/fonts/36daysofhype-Regular.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Boff-Amakan";
+	src: url("/fonts/Amakan-Stripes.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Boff-Excessive";
+	src: url("/fonts/Excessive-ExtraCondensed.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Boff-Jovian";
+	src: url("/fonts/Jovian.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Boff-Lobular";
+	src: url("/fonts/Lobular-Regular.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Boff-PACR";
+	src: url("/fonts/P-ACR-AGON-Regular.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Boff-ReadyCloud";
+	src: url("/fonts/ReadyCloudedTest-Regular.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Helper utility to apply a random garish font — ONLY the uploaded fonts */
+.font-salad-1 {
+	font-family: "Boff-36Days";
+}
+.font-salad-2 {
+	font-family: "Boff-Amakan";
+}
+.font-salad-3 {
+	font-family: "Boff-Excessive";
+}
+.font-salad-4 {
+	font-family: "Boff-Jovian";
+}
+.font-salad-5 {
+	font-family: "Boff-Lobular";
+}
+.font-salad-6 {
+	font-family: "Boff-PACR";
+}
+.font-salad-7 {
+	font-family: "Boff-ReadyCloud";
+}

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { attachFlee } from "../../lib/proximityMover";
+import { seedFromQuery } from "../../lib/chaosTheme";
 import "../../styles/fleeing.css";
 
 export default function FleeingCTA({ onClick }: { onClick?: () => void }) {
@@ -102,6 +103,14 @@ export default function FleeingCTA({ onClick }: { onClick?: () => void }) {
 		animateMove(el, left, top);
 	}
 
+	const seed = Number(seedFromQuery() || 0);
+	const reverseLabel = seed % 2 === 0 ? true : Math.random() < 0.5;
+	const labelWhenLocked = reverseLabel
+		? "Don't Apply"
+		: "Start Application (type START)";
+	const labelWhenUnlocked = reverseLabel
+		? "Cancel Application"
+		: "Start Application";
 	return (
 		<div ref={wrapperRef} className="runaway-container">
 			<button
@@ -117,9 +126,7 @@ export default function FleeingCTA({ onClick }: { onClick?: () => void }) {
 					if (Math.random() < 0.92) fleeRandomly(e);
 				}}
 			>
-				{unlocked
-					? "Start Application"
-					: "Start Application (type START)"}
+				{unlocked ? labelWhenUnlocked : labelWhenLocked}
 			</button>
 		</div>
 	);

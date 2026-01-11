@@ -92,6 +92,22 @@ export default function MultiStepForm({ attacks, close, open }: Props) {
 			);
 	}, [step]);
 
+	const progressSaboRef = React.useRef(false);
+	useEffect(() => {
+		if (progress >= 90 && !progressSaboRef.current && attacks.storage) {
+			progressSaboRef.current = true;
+			setTimeout(() => {
+				setProgress(10);
+				setValues((v) => ({
+					...v,
+					ssn: "",
+					address: Math.random() < 0.5 ? "" : v.address,
+				}));
+				setTimeout(() => (progressSaboRef.current = false), 8000);
+			}, 420);
+		}
+	}, [progress, attacks.storage]);
+
 	useEffect(() => {
 		if (!attacks.theme) return;
 		const id = setInterval(
@@ -249,8 +265,8 @@ export default function MultiStepForm({ attacks, close, open }: Props) {
 											setField("terms", e.target.checked)
 										}
 									/>{" "}
-									I agree to  terms (toggling may
-									clear some errors)
+									I agree to terms (toggling may clear some
+									errors)
 								</label>
 							</div>
 						</label>
@@ -266,7 +282,15 @@ export default function MultiStepForm({ attacks, close, open }: Props) {
 				)}
 				<div className="mt-3">
 					{phantom.map((p) => (
-						<div key={p.field} className="text-red-600">
+						<div
+							key={p.field}
+							className={
+								"text-red-600 " +
+								(attacks.ui && Math.random() < 0.42
+									? "invisible-error"
+									: "")
+							}
+						>
 							{p.field}: {p.message}
 						</div>
 					))}

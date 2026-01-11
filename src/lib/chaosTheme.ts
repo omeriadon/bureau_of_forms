@@ -29,6 +29,10 @@ export function applyRandomTheme(seed = seedFromQuery()) {
 	const effectiveSeed = seed == null ? Date.now() : seed;
 	const idx = Math.abs(effectiveSeed) % palettes.length;
 	const p = palettes[idx];
+	setPalette(p);
+}
+
+export function setPalette(p: { bg: string; fg: string; accent: string }) {
 	const root = document.documentElement;
 	root.style.setProperty("--bg", p.bg);
 	root.style.setProperty("--fg", p.fg);
@@ -42,14 +46,16 @@ export function applyRandomTheme(seed = seedFromQuery()) {
 	try {
 		const els = Array.from(
 			document.querySelectorAll(
-				".border, .rounded, button, input, .border-heavy",
+				".border, .rounded, button, input, .border-heavy, .garish-section, .garish-banner",
 			),
 		) as HTMLElement[];
 		els.forEach((el, i) => {
 			el.style.borderRadius = randomBorderRadius();
 
-			if (i % 2 === 0) el.style.color = "#ff00aa";
-			else el.style.color = "#aa00ff";
+			// apply contrasting garish tints
+			if (i % 3 === 0) el.style.color = p.fg;
+			else if (i % 3 === 1) el.style.color = p.accent;
+			else el.style.color = p.fg;
 		});
 	} catch (e) {}
 
@@ -59,6 +65,64 @@ export function applyRandomTheme(seed = seedFromQuery()) {
 		const aside = document.querySelector("aside");
 		if (aside) aside.classList.add("mismatched");
 	} catch (e) {}
+}
+
+function randomHex() {
+	return `#${Math.floor(Math.random() * 0xffffff)
+		.toString(16)
+		.padStart(6, "0")}`;
+}
+
+function randomRGBA() {
+	const r = Math.floor(Math.random() * 240);
+	const g = Math.floor(Math.random() * 240);
+	const b = Math.floor(Math.random() * 240);
+	const a = (0.85 + Math.random() * 0.2).toFixed(2);
+	return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+function generateRandomPalette() {
+	// generate high-contrast-ish combos (but truly random)
+	const bg = Math.random() < 0.5 ? randomHex() : randomRGBA();
+	const fg = Math.random() < 0.5 ? randomHex() : randomRGBA();
+	const accent = Math.random() < 0.5 ? randomHex() : randomRGBA();
+	return { bg, fg, accent };
+}
+
+let themeStopper: (() => void) | null = null;
+
+export function startThemeSaboteur({ interval = 3500 } = {}): () => void {
+	if (typeof window === "undefined") return () => {};
+	if (themeStopper) return themeStopper;
+	const id = window.setInterval(
+		() => {
+			try {
+				const p = generateRandomPalette();
+				setPalette(p);
+				// occasionally apply a slightly darker/lighter overlay
+				if (Math.random() < 0.25) {
+					const root = document.documentElement;
+					root.style.setProperty("--bg", p.bg);
+					root.style.setProperty("--fg", p.fg);
+					root.style.setProperty("--accent", p.accent);
+				}
+			} catch (e) {}
+		},
+		interval + Math.random() * (interval * 0.8),
+	);
+
+	themeStopper = function stop() {
+		try {
+			clearInterval(id);
+			themeStopper = null;
+		} catch (e) {}
+	};
+
+	return themeStopper;
+}
+
+export function stopThemeSaboteur() {
+	if (themeStopper) themeStopper();
 }
 
 export function clearChaosTheme() {

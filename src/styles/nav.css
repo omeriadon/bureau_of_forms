@@ -1,0 +1,47 @@
+.vanish-nav {
+	position: relative;
+	transition:
+		opacity 200ms ease,
+		transform 200ms ease;
+	opacity: 1;
+}
+.vanish-nav.hidden {
+	opacity: 0;
+	transform: translateY(-8px);
+	pointer-events: none;
+}
+.vanish-nav.visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+.vanish-nav ul {
+	display: flex;
+	gap: 12px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.teleport-menu-container {
+	position: relative;
+}
+.hamburger {
+	padding: 6px 10px;
+	border: 2px solid var(--accent);
+	background: transparent;
+}
+.teleport-menu {
+	position: absolute;
+	width: 180px;
+	padding: 8px;
+	border: 2px solid var(--accent);
+	background: rgba(255, 255, 255, 0.95);
+}
+.teleport-menu a {
+	display: block;
+	padding: 4px 6px;
+}
+.fake-404 {
+	background: #fff7f7;
+	border-color: var(--accent);
+	margin: 12px 0;
+}
